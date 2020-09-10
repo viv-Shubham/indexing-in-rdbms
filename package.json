@@ -1,0 +1,22 @@
+{
+  "name": "indexing-in-rdbms",
+  "version": "1.0.0",
+  "description": "optimise searching in databases using b trees.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/viv-Shubham/indexing-in-rdbms",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^10.1.1"
+  }
+}
