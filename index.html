@@ -2,29 +2,76 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <title>Indexing in RDBMS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="./styles.css">
+
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   </head>
   <body>
     
     <h3>Rows :</h3>
-    <Input></Input>
-    <button>Create Data</button>
+    <Input id="total-rows" type="text"></Input>
+    <button id="create-data" class="btn btn-primary">Create Data</button>
+
+    <hr>
 
     <h3>Create Indices on :</h3>
-    <Input></Input>
-    <button>Create Indices</button>
     
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">NAME</a><div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">USERNAME</a><div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">PASSWORD</a>
+      </div>
+    </div>
+    <button class="btn btn-primary">Create Indices</button>
+    
+    <hr>
+
     <h3>SELECT </h3>
-
+    
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">*</a><div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">NAME</a><div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">USERNAME</a><div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">PASSWORD</a>
+      </div>
+    </div>
     <h3> from Table WHERE </h3>
-
+    
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">NAME</a><div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">USERNAME</a><div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">PASSWORD</a>
+      </div>
+    </div>
     <h3> = </h3>
     <Input></Input>
-    <button>Search</button>
+    <button class="btn btn-primary">Search</button>
 
-    <button>Visualise</button>
-    <script src="./renderer.js"></script>
+  <hr>
+
+    <button class="btn btn-primary">Visualise</button>
+
+
+    <script type="module" src="index.js">
+    </script>
+    
   </body>
 </html>
