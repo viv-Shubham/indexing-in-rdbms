@@ -1,73 +1,59 @@
 const fs = require("fs");
 const path = require("path");
+let randomWords = require('random-words');
 
-function createData(totalRows){
+async function createData(totalRows){
     const dir = path.join(__dirname,"Data_For_Btree_Project");
     const dataDir = path.join(dir,"data");
     createDirectory(dir);
     createDirectory(dataDir);
     
+    let metadataFilePath = path.join(dataDir,"metadata");
+    let metadata = totalRows;
+    await writeTheRowInTheFile(metadataFilePath, metadata);
+    
     let extentNumber = 1, pageNumber = 1;
+    let pageSize=0;
     for (let i = 1; i <= parseInt(totalRows); i++) {
         const extentPath = path.join(dataDir,"extent_"+extentNumber);
-        const pagePath = path.join(extentPath,"page_"+pageNumber);
+        const pagePath = path.join(extentPath,"page_"+pageNumber+".txt");
         createDirectory(extentPath);
-        createFile(pagePath);
 
-        // RollNum = i;
-        // Name = getRandomWord();
-        // UserName = getRandomWord();
-        // Password = getRandomWord();
-        let row = "grycngicrwni gcwnic "+i+"\n";
-        // if (canThePageAccomodateARow(pagePath, row.toString().length)===true) {
-           canThePageAccomodateARow(pagePath);
-           writeTheRowInTheFile(pagePath, row);
-        // } else {
-            // i--;
+        const initFileContent = "";
+        await writeTheRowInTheFile(pagePath, initFileContent);
+        let row = "";
+        const rowRollNum = i;
+        const rowName = randomWords();
+        const rowUserName = randomWords();
+        const rowPassword = randomWords();
+        row = rowRollNum.toString() + "|" + rowName +"|"+ rowUserName +"|"+ rowPassword;
+        let rowLength = row.toString().length;
+        if (pageSize+rowLength < 7*1024) {
+            pageSize = pageSize + rowLength;
+           await writeTheRowInTheFile(pagePath, row+"\n");
+        } else {
+            i--;
             pageNumber++;
-            if (pageNumber == 9) {
+            pageSize=0;
+            if (pageNumber == 5) {
                 extentNumber++;
                 pageNumber = 1;
                 // dp.updateStatus((i * 100) / numRows);     //-----------------
             }
-        // }
+        }
     }
-    let metadataFilePath = path.join(dataDir,"metadata");
-    createFile(metadataFilePath);
-    let metadata = totalRows;
-    writeTheRowInTheFile(metadataFilePath, metadata);
 }
 
-const createDirectory = (directoryName)=>{
+function createDirectory(directoryName){
     if (!fs.existsSync(directoryName)){
-        fs.mkdirSync(directoryName)
-        // ,(err)=>{
-            // if(err)console.log(err);
-        // });
+        fs.mkdirSync(directoryName);
     }
 }
 
-const createFile = (fileName)=>{
-    fs.createWriteStream(fileName);
-}
-
-const writeTheRowInTheFile = (fileName,fileRowContent)=>{
-    fs.appendFileSync(fileName, fileRowContent)
-        // ,(err)=>{
-        // if(err)console.log(err);
-    // });
-}
-
-const canThePageAccomodateARow = (fileName)=>{
-    let stats = fs.statSync(fileName)
-    let fileSizeInBytes = stats["size"];
-    console.log(fileSizeInBytes);
-    // if(parseInt(fileSizeInBytes) < 8 * 10)return true;
-    // else return false;
-}
-
-const getRandomWord=()=>{
-
+async function writeTheRowInTheFile(fileName,fileRowContent){
+    await fs.appendFile(fileName, fileRowContent,(error)=>{
+        if(error)console.log(error);
+    });
 }
 
 export {createData};
