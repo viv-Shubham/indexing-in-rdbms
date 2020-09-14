@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-let randomWords = require('random-words');
+// let randomWords = require('random-words');
 
 async function createData(totalRows){
     const dir = path.join(__dirname,"Data_For_Btree_Project");
@@ -23,9 +23,9 @@ async function createData(totalRows){
         await writeTheRowInTheFile(pagePath, initFileContent);
         let row = "";
         const rowRollNum = i;
-        const rowName = randomWords();
-        const rowUserName = randomWords();
-        const rowPassword = randomWords();
+        const rowName = await getRandomWord();
+        const rowUserName = await getRandomWord();
+        const rowPassword = await getRandomWord();
         row = rowRollNum.toString() + "|" + rowName +"|"+ rowUserName +"|"+ rowPassword;
         let rowLength = row.toString().length;
         if (pageSize+rowLength < 7*1024) {
@@ -55,5 +55,17 @@ async function writeTheRowInTheFile(fileName,fileRowContent){
         if(error)console.log(error);
     });
 }
+
+function getRandomWord(){
+    let length = parseInt((Math.random() * 10) + 5);
+    let word = "";
+    for (let i = 0; i < length; i++) {
+        let ch = String.fromCharCode(97 +(Math.random() * 25));
+        word = word + ch.toString();
+    }
+
+    return word.toString();
+}
+
 
 export {createData};
