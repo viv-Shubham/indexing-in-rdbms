@@ -1,6 +1,9 @@
 const fs = require("fs");
 const path = require("path");
-// let randomWords = require('random-words');
+const lineReader = require('line-reader');
+let Promise = require("bluebird");
+
+let searchedData = ["NOTFOUND"];
 
 async function createData(totalRows){
     const dir = path.join(__dirname,"Data_For_Btree_Project");
@@ -42,6 +45,7 @@ async function createData(totalRows){
             }
         }
     }
+    console.log("Data generated successfully!");
 }
 
 function createDirectory(directoryName){
@@ -67,5 +71,57 @@ function getRandomWord(){
     return word.toString();
 }
 
+async function searchData(dataToBeDisplayed,searchDataInColumn,dataToBeSearched){
+    
+    const dir = path.join(__dirname,"Data_For_Btree_Project");
+    const dataDir = path.join(dir,"data");
+    let extentNumber=1,pageNumber=1;
+    let totalRows=0;
+    let metadataFilePath = path.join(dataDir,"metadata");
+    let curLine = "";
+    let resultAfterSearch;
 
-export {createData};
+    var eachLine = Promise.promisify(lineReader.eachLine);
+    await eachLine(metadataFilePath, function(line) {
+        curLine = line.toString();
+    }).then(async function() {
+        totalRows = parseInt(curLine);
+        console.log(totalRows);
+        let i=1;
+        let flag = false;
+        while (i <= parseInt(totalRows)) {
+            if(flag)break;
+            let extentPath = path.join(dataDir,"extent_"+extentNumber);
+            let pagePath = path.join(extentPath,"page_"+pageNumber+".txt");
+            // let pathsearch = path.relative(__filename,pagePath);
+
+            let pathsearch = pagePath;
+            pathsearch = pathsearch.split("\\").join("/");
+            console.log(pathsearch);
+            await eachLine(pathsearch,function(line){
+                if(flag == false){
+                    // console.log(line);
+                curLine = line.toString();
+                let result = curLine.split("|");
+                i++;
+                if(dataToBeSearched==result[parseInt(searchDataInColumn)]){
+                    resultAfterSearch = result;
+                    flag = true;
+                } else return;
+            }
+            }).then(()=>{
+                pageNumber++;
+                if (pageNumber == 5) {
+                    extentNumber++;
+                    pageNumber = 1;
+                }
+            })
+        }
+    }).catch(function(err) {
+        console.error(err);
+    });
+    if(resultAfterSearch)searchedData = resultAfterSearch;
+    else searchedData = ["NOTFOUND"];
+    
+}
+export {createData,searchData,searchedData};
