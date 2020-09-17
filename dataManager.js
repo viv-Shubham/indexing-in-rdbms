@@ -112,12 +112,6 @@ function writeTheRowInTheFile(fileName,fileRowContent){
             resolve();
         })
     });
-
-
-    // fs.appendFileSync(fileName, fileRowContent);
-    //     ,(error)=>{
-    //     if(error)console.log(error);
-    // });
 }
 
 function getRandomWord(){
