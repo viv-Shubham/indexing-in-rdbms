@@ -101,17 +101,18 @@ function createDirectory(directoryName){
 }
 
 function writeTheRowInTheFile(fileName,fileRowContent){
-
-    return new Promise((resolve, reject) => {
-        fs.appendFile(fileName, fileRowContent, (err) => {
-            if(err) {
-                console.log(err);
-                reject(err);
-                return;
-            }
-            resolve();
-        })
-    });
+    if (!fs.existsSync(fileName)){
+        return new Promise((resolve, reject) => {
+            fs.appendFile(fileName, fileRowContent, (err) => {
+                if(err) {
+                    console.log(err);
+                    reject(err);
+                    return;
+                }
+                resolve();
+            })
+        });
+    }
 }
 
 function getRandomWord(){
@@ -180,14 +181,17 @@ async function searchData(dataToBeDisplayed,searchDataInColumn,dataToBeSearched)
 }
 async function addLineToIndex(value, address, indexDirPath){
     let metadataFilePath = path.join(indexDirPath,"metadata");
-    await writeTheRowInTheFile(metadataFilePath, "");
-
     let rootFilePath = path.join(indexDirPath,"root");
+
     await createRootFile(rootFilePath, metadataFilePath);
 
     let nodeLeafMap = await getMetadataInfo(metadataFilePath);     // new Map()
     await addLineToNode(indexDirPath, "root", nodeLeafMap, value, address);
     await manageChildNodeSize(indexDirPath, "root", null, nodeLeafMap);
     await updateMetadataInfo(metadataFilePath, nodeLeafMap);
+}
+async function createRootFile(rootFilePath, metadataFilePath){
+    await writeTheRowInTheFile(metadataFilePath,"root=true");
+    await writeTheRowInTheFile(rootFilePath,"");
 }
 export {createData,searchData,searchedData,createIndex};
