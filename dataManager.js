@@ -79,7 +79,7 @@ async function createIndex(columnName , columnNumber){
 				let address = extentNumber + "|" + pageNumber + "|" + offset;
                 offset++;
                 i++;
-				addLineToIndex(value, address, specificIndexDirPath);
+				await addLineToIndex(value, address, specificIndexDirPath);
             }).then(()=>{
                 pageNumber++;
                 if (pageNumber == 9) {
@@ -178,7 +178,16 @@ async function searchData(dataToBeDisplayed,searchDataInColumn,dataToBeSearched)
     else searchedData = ["NOTFOUND"];
     
 }
-async function addLineToIndex(value, address, specificIndexDirPath){
+async function addLineToIndex(value, address, indexDirPath){
+    let metadataFilePath = path.join(indexDirPath,"metadata");
+    await writeTheRowInTheFile(metadataFilePath, "");
 
+    let rootFilePath = path.join(indexDirPath,"root");
+    await createRootFile(rootFilePath, metadataFilePath);
+
+    let nodeLeafMap = await getMetadataInfo(metadataFilePath);     // new Map()
+    await addLineToNode(indexDirPath, "root", nodeLeafMap, value, address);
+    await manageChildNodeSize(indexDirPath, "root", null, nodeLeafMap);
+    await updateMetadataInfo(metadataFilePath, nodeLeafMap);
 }
 export {createData,searchData,searchedData,createIndex};
