@@ -185,7 +185,8 @@ async function addLineToIndex(value, address, indexDirPath){
 
     await createRootFile(rootFilePath, metadataFilePath);
 
-    let nodeLeafMap = await getMetadataInfo(metadataFilePath);     // new Map()
+    let nodeLeafMap = new Map();
+    nodeLeafMap = await getMetadataInfo(metadataFilePath);
     await addLineToNode(indexDirPath, "root", nodeLeafMap, value, address);
     await manageChildNodeSize(indexDirPath, "root", null, nodeLeafMap);
     await updateMetadataInfo(metadataFilePath, nodeLeafMap);
@@ -194,4 +195,22 @@ async function createRootFile(rootFilePath, metadataFilePath){
     await writeTheRowInTheFile(metadataFilePath,"root=true");
     await writeTheRowInTheFile(rootFilePath,"");
 }
+async function getMetadataInfo(metadataFilePath){
+    let map = new Map();
+    var eachLine = Promise.promisify(lineReader.eachLine);
+    await eachLine(metadataFilePath,function(line){
+        map.set(line.split("=")[0],line.split("=")[1].toLowerCase() === "true" ? true : false);
+    });
+    return map;
+}
+async function updateMetadataInfo(metadataFilePath, nodeLeafMap){
+    for(let ckey of nodeLeafMap.keys()){
+        let line  = ckey + "=" + nodeLeafMap.get(ckey) + "\n";
+        await writeTheRowInTheFile(metadataFilePath,line);
+    }
+}
+async function addLineToNode(indexDirPath, node, nodeLeafMap, value, address){
+
+}
+
 export {createData,searchData,searchedData,createIndex};
